@@ -1,4 +1,5 @@
 
+import re
 import requests
 import trafilatura
 from bs4 import BeautifulSoup
@@ -17,6 +18,53 @@ def get_meta_content(soup, *attributes):
     return None
 
 
+def clean_author(author, website):
+    """Remove email/contact details and duplicated website names."""
+
+    if not author:
+        return None
+
+    if isinstance(author, (list, tuple)):
+        author = " ".join(str(item) for item in author)
+
+    author = str(author)
+
+    # Remove actual email addresses.
+    author = re.sub(
+        r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
+        " ",
+        author,
+        flags=re.IGNORECASE
+    )
+
+    # Remove email labels and any contact information following them.
+    author = re.sub(
+        r"\b(?:e-?mail)\b\s*[:\-]?.*$",
+        "",
+        author,
+        flags=re.IGNORECASE
+    )
+
+    author = re.sub(r"\s+", " ", author).strip(" -|,;:")
+
+    # Remove a duplicated publisher name at the end of the author field.
+    if website:
+        website_names = [
+            name.strip()
+            for name in website.split(":")
+            if name.strip()
+        ]
+
+        for name in website_names:
+            if (
+                author.casefold() != name.casefold()
+                and author.casefold().endswith(" " + name.casefold())
+            ):
+                author = author[:-len(name)].strip()
+
+    return author or None
+
+
 def scrape_article(url):
     headers = {
         "User-Agent": (
@@ -29,7 +77,7 @@ def scrape_article(url):
         response = requests.get(
             url,
             headers=headers,
-            timeout=20
+            timeout=(10,60)
         )
 
         response.raise_for_status()
@@ -37,7 +85,7 @@ def scrape_article(url):
         html = response.text
         soup = BeautifulSoup(html, "html.parser")
 
-        # Extract article content
+        # Extract article content.
         extracted = trafilatura.extract(
             html,
             include_comments=False,
@@ -51,15 +99,20 @@ def scrape_article(url):
 
         article_data = json.loads(extracted)
 
-        # Extract metadata using Trafilatura
+        # Extract metadata through Trafilatura.
         metadata = trafilatura.metadata.extract_metadata(html)
 
-        # Extract metadata using HTML tags as fallback
+        # Extract metadata through HTML tags as fallback.
         title = (
             metadata.title
             or get_meta_content(soup, {"property": "og:title"})
             or get_meta_content(soup, {"name": "twitter:title"})
             or (soup.title.get_text(strip=True) if soup.title else None)
+        )
+
+        website = (
+            metadata.sitename
+            or get_meta_content(soup, {"property": "og:site_name"})
         )
 
         author = (
@@ -75,10 +128,7 @@ def scrape_article(url):
             or get_meta_content(soup, {"itemprop": "datePublished"})
         )
 
-        website = (
-            metadata.sitename
-            or get_meta_content(soup, {"property": "og:site_name"})
-        )
+        author = clean_author(author, website)
 
         return {
             "title": title,
