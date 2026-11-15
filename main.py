@@ -1,26 +1,50 @@
 
+import json
+from pathlib import Path
 from scraper.web_scraper import scrape_article
 
 
-url = input("Enter article URL: ").strip()
+def save_article(article):
+    output_dir = Path("output/articles")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-article = scrape_article(url)
+    output_file = output_dir / "article.json"
 
-if article:
-    print("\n========== ARTICLE INFORMATION ==========")
+    with output_file.open("w", encoding="utf-8") as file:
+        json.dump(
+            article,
+            file,
+            indent=4,
+            ensure_ascii=False
+        )
 
-    print(f"Title: {article['title']}")
-    print(f"Author: {article['author']}")
-    print(f"Date: {article['date']}")
-    print(f"Website: {article['website']}")
-    print(f"URL: {article['url']}")
+    print(f"\nArticle saved to: {output_file}")
 
-    print("\n========== ARTICLE CONTENT ==========")
 
-    content = article["text"]
+def main():
+    url = input("Enter article URL: ").strip()
 
-    print(content)
-    print(f"\nExtracted characters: {len(content)}")
+    article = scrape_article(url)
 
-else:
-    print("Unable to extract article.")
+    if article:
+        print("\n========== ARTICLE INFORMATION ==========")
+        print(f"Title: {article['title']}")
+        print(f"Author: {article['author']}")
+        print(f"Date: {article['date']}")
+        print(f"Website: {article['website']}")
+        print(f"URL: {article['url']}")
+
+        print("\n========== ARTICLE CONTENT ==========")
+        content = article["text"]
+
+        print(content[:1500])
+        print(f"\nTotal extracted characters: {len(content)}")
+
+        save_article(article)
+
+    else:
+        print("Unable to extract article.")
+
+
+if __name__ == "__main__":
+    main()
