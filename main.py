@@ -2,76 +2,85 @@
 import json
 import re
 from pathlib import Path
-from scraper.web_scraper import scrape_article
+
+from scraper.pdf_extractor import extract_pdf
 
 
-def generate_filename(title):
-    """Convert an article title into a filesystem-safe filename."""
+def generate_filename(filename):
+    """Generate a filesystem-safe filename."""
 
-    filename = re.sub(
+    filename = Path(filename).stem
+
+    slug = re.sub(
         r"[^a-z0-9]+",
         "-",
-        title.lower()
+        filename.lower()
     ).strip("-")
 
-    return filename or "article"
+    return slug or "document"
 
 
-def save_article(article):
-    output_dir = Path("output/articles")
+def save_pdf_result(result):
+    """Save extracted PDF information as JSON."""
+
+    output_dir = Path("output/pdfs")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Generate filename from article title.
-    base_name = generate_filename(article.get("title") or "article")
-
+    base_name = generate_filename(result["file_name"])
     output_file = output_dir / f"{base_name}.json"
 
-    # Prevent existing articles from being overwritten.
     counter = 2
 
     while output_file.exists():
         output_file = output_dir / f"{base_name}-{counter}.json"
         counter += 1
 
-    # Save article as JSON.
     with output_file.open("w", encoding="utf-8") as file:
         json.dump(
-            article,
+            result,
             file,
             indent=4,
             ensure_ascii=False
         )
 
-    print(f"\nArticle saved to: {output_file}")
-
-    return output_file
+    print(f"\nPDF extraction saved to: {output_file}")
 
 
 def main():
-    url = input("Enter article URL: ").strip()
+    pdf_path = input(
+        "Enter PDF file path: "
+    ).strip().strip('"').strip("'")
 
-    article = scrape_article(url)
+    try:
+        result = extract_pdf(pdf_path)
 
-    if article:
-        print("\n========== ARTICLE INFORMATION ==========")
+        metadata = result["metadata"]
 
-        print(f"Title: {article['title']}")
-        print(f"Author: {article['author']}")
-        print(f"Date: {article['date']}")
-        print(f"Website: {article['website']}")
-        print(f"URL: {article['url']}")
+        print("\n========== PDF INFORMATION ==========")
 
-        print("\n========== ARTICLE CONTENT ==========")
+        print(f"File: {result['file_name']}")
+        print(f"Title: {metadata['title']}")
+        print(f"Author: {metadata['author']}")
+        print(f"Subject: {metadata['subject']}")
+        print(f"Pages: {result['page_count']}")
+        print(f"Pages with text: {result['pages_with_text']}")
+        print(f"Total characters: {result['total_characters']}")
 
-        content = article["text"]
+        print("\n========== EXTRACTION RESULT ==========")
 
-        print(content[:1500])
-        print(f"\nTotal extracted characters: {len(content)}")
+        if result["extraction_status"] == "no_text_detected":
+            print(
+                "No selectable text detected. "
+                "This PDF may be scanned or image-based."
+            )
+        else:
+            print(result["text"][:2000])
+            print("\nShowing first 2,000 characters.")
 
-        save_article(article)
+        save_pdf_result(result)
 
-    else:
-        print("Unable to extract article.")
+    except (FileNotFoundError, ValueError, RuntimeError) as error:
+        print(f"\nPDF extraction failed: {error}")
 
 
 if __name__ == "__main__":
