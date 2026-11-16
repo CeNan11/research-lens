@@ -1,0 +1,104 @@
+{
+    "profile_version": "1.0",
+    "source": {
+        "file_name": "Delgado_K - KnowTa!.pdf",
+        "page_count": 15,
+        "extraction_status": "success"
+    },
+    "research": {
+        "title": "Delgado_K - KnowTa!",
+        "title_source": null,
+        "authors": [],
+        "keywords": {
+            "items": [],
+            "source": null,
+            "pages": []
+        },
+        "sections": {
+            "abstract": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "background_of_study": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "statement_of_problem": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "objectives": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "research_questions": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "scope_and_limitations": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "significance_of_study": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "methodology": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "theoretical_framework": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "conceptual_framework": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "review_of_related_literature": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            }
+        }
+    },
+    "review": {
+        "status": "pending",
+        "missing_fields": [
+            "authors",
+            "keywords",
+            "abstract",
+            "background_of_study",
+            "statement_of_problem",
+            "objectives",
+            "research_questions",
+            "scope_and_limitations",
+            "significance_of_study",
+            "methodology",
+            "theoretical_framework",
+            "conceptual_framework",
+            "review_of_related_literature"
+        ]
+    }
+}

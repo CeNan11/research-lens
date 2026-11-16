@@ -1,0 +1,108 @@
+{
+    "profile_version": "1.0",
+    "source": {
+        "file_name": "ocr-test-scanned.pdf",
+        "page_count": 2,
+        "extraction_status": "success"
+    },
+    "research": {
+        "title": null,
+        "title_source": null,
+        "authors": [],
+        "keywords": {
+            "items": [],
+            "source": null,
+            "pages": []
+        },
+        "sections": {
+            "abstract": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "background_of_study": {
+                "heading": [
+                    "Background of the Study"
+                ],
+                "content": "Creating music has always been a highly human activity. It comes from emotion, real life experiences, and creative goals [1]. However, Artificial Intelligence is rapidly changing how people create and listen to music [2]. Modern computer programs can scan millions of songs to learn complex patterns in rhythm and style. Because of this, they can generate new music incredibly fast [3]. Systems continue to push the realism of synthetic music through deep generative architectures [4] and specialized language models [5]. Tools like Suno and Udio show exactly how powerful this technology is today, using advanced networks to create complete songs with vocals, lyrics, and instruments across many genres [6]. As these systems become faster and produce higher audio quality [7], experts predict a massive shift in the music industry. Artificial Intelligence will serve as a helpful assistant for casual creators. However, fully automated generation threatens to flood platforms with synthetic songs. In the future, verified human authenticity will become a highly valued premium commodity.\n\nThe results of this shift are urgent and are already causing global backlash. A large international survey by Deezer and Ipsos found that 97 percent of participants could not tell the difference between human made and fully Al generated music [8]. Because people cannot hear the difference, synthetic tracks are flooding streaming platforms. This directly threatens the income of real musicians. Experts project a 12.7 billion dollar loss for musicians by 2028 [9], alongside a massive drop in revenue [10]. In response, international artists are becoming fiercely protective. The Artist Rights Alliance, which represents over 200 massive global artists, recently released an open letter. They condemned the predatory use of Artificial Intelligence that devalues human creativity [11]. Without reliable detection technology, the music industry cannot protect authentic human work or ensure fair pay for artists.\n\nExisting detection tools try to solve this problem, but they are technically weak. Traditional machine learning methods provide a basic start [12], while newer networks try to find visual and timing errors in the audio [13], [14]. Despite these efforts, international detection systems fail in three major ways. First, the most advanced single mix models, like the Deezer Autoencoder, achieve 99.8 percent accuracy in a controlled lab [15]. However, they completely fail when the audio pitch is slightly shifted. They only look for software glitches instead of real human musicality. Second, models like SpecTTTra ignore human biological vocal features. They ignore natural breathing pauses and vibrato, which are proven signs of an authentic human singer [16]. Third, systems that use two branches often process the entire blended audio file without separating the vocals and instruments first. This creates messy data analysis. Finally, these models fail heavily when tested on unseen AI platforms [17].\n\nThe urgency of this problem goes beyond the global industry. It is acutely felt in the Philippines. The Intellectual Property Office of the Philippines currently does not register Al generated content for copyright [18]. This leaves human artists with very little legal protection. National artist sentiments reveal deep frustration. Recently, the OPM community sounded the alarm when an anonymous AI generated artist topped the Spotify Philippines Viral charts [19]. Filipino musicians argue that unregulated software monetizes local culture without permission",
+                "pages": [
+                    2
+                ],
+                "status": "found"
+            },
+            "statement_of_problem": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "objectives": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "research_questions": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "scope_and_limitations": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "significance_of_study": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "methodology": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "theoretical_framework": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "conceptual_framework": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "review_of_related_literature": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            }
+        }
+    },
+    "review": {
+        "status": "pending",
+        "missing_fields": [
+            "title",
+            "authors",
+            "keywords",
+            "abstract",
+            "statement_of_problem",
+            "objectives",
+            "research_questions",
+            "scope_and_limitations",
+            "significance_of_study",
+            "methodology",
+            "theoretical_framework",
+            "conceptual_framework",
+            "review_of_related_literature"
+        ]
+    }
+}
