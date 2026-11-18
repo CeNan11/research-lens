@@ -14,6 +14,9 @@ from research.profile_editor import (
     validate_profile,
 )
 
+from research.text_processor import process_pdf_extraction
+from research.chunk_pipeline import build_chunk_package
+
 
 # ---------------------------------------------------------
 # GENERAL HELPERS
@@ -47,7 +50,12 @@ def save_json(data, output_folder, filename):
         counter += 1
 
     with output_file.open("w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
+        json.dump(
+            data,
+            file,
+            indent=4,
+            ensure_ascii=False
+        )
 
     print(f"\nSaved to: {output_file}")
 
@@ -84,6 +92,7 @@ def select_pdf():
                 ("All Files", "*.*")
             ]
         )
+
     finally:
         root.destroy()
 
@@ -107,6 +116,7 @@ def select_json(title, initial_directory):
                 ("All Files", "*.*")
             ]
         )
+
     finally:
         root.destroy()
 
@@ -231,7 +241,9 @@ def run_profile_creator():
         pdf_data = load_json(source_path)
 
         if not isinstance(pdf_data, dict):
-            raise ValueError("The selected JSON is not a valid PDF extraction result.")
+            raise ValueError(
+                "The selected JSON is not a valid PDF extraction result."
+            )
 
         if pdf_data.get("source_type") != "pdf":
             raise ValueError(
@@ -239,7 +251,9 @@ def run_profile_creator():
             )
 
         if not isinstance(pdf_data.get("pages"), list):
-            raise ValueError("The selected PDF JSON has no valid pages.")
+            raise ValueError(
+                "The selected PDF JSON has no valid pages."
+            )
 
         print("\nGenerating research profile...")
 
@@ -349,6 +363,164 @@ def run_existing_profile_editor():
 
 
 # ---------------------------------------------------------
+# PHASE 4: CHUNK PROCESSING AND PROFILE LINKING
+# ---------------------------------------------------------
+
+def run_chunk_pipeline():
+    """
+    Generate research chunks and link them to an
+    approved research profile.
+    """
+
+    print("\n========== GENERATE RESEARCH CHUNKS ==========")
+
+    # Step 1: Select the approved research profile.
+    print("\nSelect an APPROVED research profile.")
+
+    profile_path = select_json(
+        title="Select an Approved Research Profile",
+        initial_directory="output/profiles"
+    )
+
+    if not profile_path:
+        print("No research profile selected.")
+        return
+
+    try:
+        profile = load_json(profile_path)
+        profile = validate_profile(profile)
+
+        if profile.get("review", {}).get("status") != "approved":
+            print("\nThis research profile has not been approved.")
+            print(
+                "Open option 4, review the profile, "
+                "and use option 7 to approve and save it."
+            )
+            return
+
+        # Step 2: Select the original PDF extraction JSON.
+        print("\nSelect the matching PDF extraction JSON.")
+
+        pdf_path = select_json(
+            title="Select the Matching PDF Extraction",
+            initial_directory="output/pdfs"
+        )
+
+        if not pdf_path:
+            print("No PDF extraction selected.")
+            return
+
+        pdf_data = load_json(pdf_path)
+
+        if not isinstance(pdf_data, dict):
+            raise ValueError(
+                "The selected PDF JSON is invalid."
+            )
+
+        if pdf_data.get("source_type") != "pdf":
+            raise ValueError(
+                "The selected JSON is not a PDF extraction result."
+            )
+
+        # Step 3: Generate text chunks.
+        print("\nGenerating research chunks...")
+
+        chunks_data = process_pdf_extraction(
+            pdf_data,
+            max_chars=1200,
+            overlap_chars=150
+        )
+
+        print("\n========== CHUNK PROCESSING RESULTS ==========")
+
+        print("Source:", chunks_data["source_file"])
+        print("Pages:", chunks_data["page_count"])
+        print("Paragraphs:", chunks_data["total_paragraphs"])
+        print("Chunks:", chunks_data["total_chunks"])
+
+        # Step 4: Link chunks to the approved profile.
+        print("\nLinking chunks to the research profile...")
+
+        package = build_chunk_package(
+            profile,
+            pdf_data,
+            chunks_data
+        )
+
+        # Step 5: Save the raw chunks.
+        source_base = Path(pdf_path).stem
+
+        chunks_output = save_json(
+            chunks_data,
+            "output/chunks",
+            f"{source_base}_chunks.json"
+        )
+
+        # Step 6: Save the linked research package.
+        package_output = save_json(
+            package,
+            "output/chunks",
+            f"{source_base}_research_package.json"
+        )
+
+        # Step 7: Display the package summary.
+        print("\n========== LINKED RESEARCH PACKAGE ==========")
+
+        print("Research title:", profile["research"].get("title"))
+        print("Profile status:", package["profile_review"]["status"])
+        print("Source PDF:", package["source"]["file_name"])
+
+        print("\nSection chunk counts:")
+
+        for name, section in package["sections"].items():
+
+            print(
+                f"- {name.replace('_', ' ').title()}: "
+                f"{section['chunk_count']} chunks"
+            )
+
+        print(
+            "\nUnclassified chunks:",
+            package["chunk_processing"]["unclassified_chunks"]
+        )
+
+        print(
+            "Unmapped chunks:",
+            package["chunk_processing"]["unmapped_chunks"]
+        )
+
+        print("\nValidation:")
+
+        for key, value in package["validation"].items():
+
+            if key != "warnings":
+                print(f"- {key}: {value}")
+
+        if package["validation"]["warnings"]:
+
+            print("\nWarnings:")
+
+            for warning in package["validation"]["warnings"]:
+                print(f"- {warning}")
+
+        print("\n========== OUTPUT FILES ==========")
+        print("Chunks:", chunks_output)
+        print("Research package:", package_output)
+
+        print("\nChunk processing and profile linking completed.")
+
+    except (
+        OSError,
+        json.JSONDecodeError,
+        TypeError,
+        ValueError,
+        KeyError
+    ) as error:
+
+        print(f"\nChunk processing failed: {error}")
+
+
+# ---------------------------------------------------------
 # MAIN MENU
 # ---------------------------------------------------------
 
@@ -357,15 +529,16 @@ def main():
     while True:
 
         print("\n")
-        print("=" * 40)
-        print("          RESEARCHLENS")
-        print("=" * 40)
+        print("=" * 45)
+        print("              RESEARCHLENS")
+        print("=" * 45)
 
         print("1. Extract Website Article")
         print("2. Extract PDF Research Paper")
         print("3. Create Research Profile")
         print("4. Review Existing Research Profile")
-        print("5. Exit")
+        print("5. Generate Research Chunks and Link Profile")
+        print("6. Exit")
 
         choice = input("\nSelect an option: ").strip()
 
@@ -382,6 +555,9 @@ def main():
             run_existing_profile_editor()
 
         elif choice == "5":
+            run_chunk_pipeline()
+
+        elif choice == "6":
             print("\nExiting ResearchLens.")
             break
 

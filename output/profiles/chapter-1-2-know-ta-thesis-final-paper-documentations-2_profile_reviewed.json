@@ -1,0 +1,127 @@
+{
+    "profile_version": "1.0",
+    "source": {
+        "file_name": "Chapter 1 & 2 - Know Ta (Thesis)- Final Paper & Documentations.pdf",
+        "page_count": 13,
+        "extraction_status": "success"
+    },
+    "research": {
+        "title": "Chapter 1 & 2 - Know Ta (Thesis)- Final Paper & Documentations",
+        "title_source": null,
+        "authors": [
+            "University of Southeastern Philippines, Davao City",
+            "Bo. Obrero, Davao City",
+            "Delgado, Kent Paulo R.",
+            "Delgado, Earl Josh B.",
+            "Labay, John Renan N."
+        ],
+        "keywords": {
+            "items": [],
+            "source": null,
+            "pages": []
+        },
+        "sections": {
+            "abstract": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "background_of_study": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "statement_of_problem": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "objectives": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "research_questions": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "scope_and_limitations": {
+                "heading": [
+                    "Scope of the Study"
+                ],
+                "content": "The scope of this research covers the following areas:\n\n1. Target Audio and Datasets: The study evaluates English language music tracks that contain both singing and instrumental accompaniment. Model training and initial testing use the SONICS dataset, which includes thousands of real human songs and synthetic tracks created by popular tools such as Suno and Udio [28]. Cross platform generalization is tested using the AIME dataset, which contains music from twelve different generation engines that the system never encountered during training [29]. Both datasets consist exclusively of ethical, non copyrighted, or Creative Commons audio, ensuring strict legal compliance. 2. System Architecture: The detection pipeline uses a structured sequence of established algorithms. The Demucs model first splits the input song into an isolated vocal track and an instrumental track [22]. The instrumental track is converted into a Mel Spectrogram image and analyzed by an EfficientNet B0 network [23]. The isolated vocal track is processed by a Bidirectional LSTM network [24] to measure biological traits such as breathing pause patterns [16], pitch stability, and natural vibrato. An attention based fusion layer then calculates learned weights to balance the importance of both branches based on the specific content of the song [25].\n\n3. Uncertainty Estimation and Analytics: The system includes Bayesian uncertainty estimation using Monte Carlo Dropout [26] combined with Temperature Scaling [27]. This setup allows the model to run multiple testing passes on the same clip, turning the variation of the results into an honest percentage confidence score. It also powers a conflict flag feature that detects and explains disagreements between the vocal branch and the audio branch. 4. Evaluation and Final Product: System performance is measured using six standard metrics recommended by international benchmark protocols: Accuracy, Precision, Recall, F1 Score, ROC AUC, and Cross Platform Performance Drop Percentage [30]. The final output is delivered as a working, user friendly web application where users can upload standard audio files and view clear authenticity reports.\n\nDelimitations of the Study\n\nTo keep the research manageable within available resources, the study sets the following limits:\n\n1. Language and Audio Style Limits: The system is trained and tested only on English language songs because the benchmark datasets are primarily recorded in English [28], [29]. The system does not evaluate songs in Filipino, regional Philippine languages, or other foreign languages. Furthermore, while the system handles songs with long instrumental solos, it is not designed to evaluate purely instrumental genres, such as classical orchestra tracks, that have zero vocal content throughout the entire song. 2. Model Selection Limits: The study chooses EfficientNet B0 for audio analysis and Bidirectional LSTM for vocal analysis based on prior benchmark performance [23], [24]. It does not train or build other heavy computer vision backbones, such as ResNet, VGG, or Vision Transformers, beyond using them as comparison numbers from existing literature. For uncertainty estimation, the study does not implement Deep Ensembles [31], because training multiple independent models requires too much computing memory and would make the simple web application too slow for everyday users. 3. Operational and Legal Limits: The system functions purely as an analytical detector and does not include legal enforcement features, copyright takedown mechanisms, or watermarking capabilities. It operates strictly on recorded audio files uploaded by the user in MP3 or WAV format and does not monitor live streaming audio feeds in real time. Finally, the project is delimited to a desktop web browser interface; mobile phone applications and direct integrations with commercial streaming platforms like Spotify or Apple Music are left for future development.\n\nChapter 2: Review of Related Literature and Studies Related Literature\n\nThis chapter reviews the literature behind Know Ta. It starts with the rise of AI generated music and its impact, then looks at existing detection methods and where they fall short. It ends\n\nwith the components Know Ta is built on: source separation, spectral and vocal analysis, attention based fusion, and Bayesian uncertainty estimation.\n\nThe Rise of AI Generated Music\n\nMusic has long been seen as an expression of human emotion and lived experience [1]. AI is changing that. Today's systems learn rhythm, harmony, and style from large song collections and can produce new songs at scale [3]. These tools are also reshaping how independent artists work [2]. Generative models such as Variational Autoencoders, GANs, and Diffusion Models drive much of this progress [4], [5]. Suno and Udio can create full songs with vocals, lyrics, and instruments [6], while ChatMusician shows that a language model can write music from a text prompt [5]. Computational intelligence keeps widening the range of music tasks that can be automated [7].\n\nIndustry and Economic Impact\n\nThe effects are already measurable. In a Deezer and Ipsos study, 97 percent of listeners could not tell AI music from human music [8]. Musicians could lose an estimated 12.7 billion dollars by 2028 [9], and creator revenue is projected to fall by 27 percent in the same period [10]. These numbers show why reliable detection is needed.\n\nLegal, Regulatory, and Local Context\n\nIn the Philippines, AI generated content cannot be registered for copyright [18]. This leaves artists and developers in a legal gray area. Filipino artists now compete with tracks that cost almost nothing to produce, and musical works made up only 7 percent of copyright certificates issued in 2024. The OPM community raised the alarm when an anonymous AI \"artist\" topped the Spotify Philippines Viral chart [19]. SB19's Pablo publicly condemned the unethical use of AI and said that taking an artist's identity and work without consent should be illegal [21]. In Davao City, no regulation yet addresses how AI music affects local creators.\n\nTraditional and Early Deep Learning Detection\n\nEarly audio classification relied on traditional machine learning. Support Vector Machines were used for genre classification [12], and SVM and Random Forest classifiers remain an interpretable but limited first step in detection. Convolutional Neural Networks later made spectral feature extraction efficient [13], and Recurrent Neural Networks captured timing patterns in music [14]. Transformers with attention improved the modeling of long range musical structure.\n\nLimitations of Current Detection Systems\n\nCurrent detectors have three main weaknesses. First, they are fragile. One detector reached 99.8 percent accuracy in controlled tests but collapsed after simple changes such as pitch shifting or codec re encoding, labeling every track as real once platform artifacts were\n\ngone [15]. Second, they do not generalize. A detector trained on one AI platform performs poorly on platforms it has never seen, so every new generator weakens existing tools [17]. Third, they leave out key design elements. A comprehensive benchmark found that detectors work on blended audio without separating vocals from instruments, and that they ignore human vocal biomarkers such as breathing pauses and vibrato [16]. The same benchmark named multimodal detection as the most urgent open direction. Know Ta is built to answer this call.\n\nSource Separation\n\nDemucs separates vocals and instruments from a mixed track directly in the waveform domain [22]. Know Ta uses it so that each branch receives a clean input instead of a blended one.\n\nSpectral Analysis and the Audio Branch\n\nEfficientNet scales network width, depth, and resolution together, which gives strong accuracy with far fewer parameters than older models [23]. In an audio deepfake benchmark on Mel Spectrograms, EfficientNet B0 outperformed the other architectures tested [Bajwa et al.]. Mel Spectrograms themselves work better than MFCCs and chromagrams as input for CNN audio classification [Wolf Monheim]. Together, these findings support the Audio Branch design of Know Ta.\n\nVocal Analysis and the Vocal Branch\n\nCues like vibrato and breathing pauses can only be identified with context from both before and after a moment in the audio, which bidirectional networks provide [24]. In audio deepfake tests, Bi LSTM beat both LSTM and Transformer models, reaching the best Equal Error Rate (0.43 percent) and the highest accuracy [Al Hussaini et al.]. Adding prosodic features such as pitch, timing, and glottal parameters to parallel LSTM modules also improves the separation of real and fake audio [Muruganandham et al.]. The absence of regular breathing and vibrato is a reliable, peer reviewed sign of machine generated audio [16]. These findings support the Vocal Branch design of Know Ta.\n\nAttention and Multimodal Fusion\n\nAttention lets a model weigh each input by how useful it is for the song being analyzed [25]. Simple concatenation performs worse than attention based fusion because it cannot suppress irrelevant information [Ranipa et al.]. Theory also shows that adding a complementary modality never lowers expected performance [Huang et al.], so combining two branches can only match or improve on either one alone. In practice, an attention based mixture of experts ranked first overall in a major audio deepfake detection challenge [Negroni et al.].\n\nAblation Methodology\n\nA component's contribution can only be claimed by removing it and measuring the change in performance [Meyes et al.]. Recent CNN Bi LSTM deepfake studies follow this same structure [Yadav and Mangalampalli; Murty et al.]. Know Ta adopts it for its six model ablation study.\n\nBayesian Uncertainty Estimation\n\nKeeping dropout active during inference and running many forward passes approximates Bayesian inference, a technique called Monte Carlo Dropout [26]. This allows two kinds of uncertainty to be told apart: aleatoric uncertainty, which comes from ambiguity in the input, and epistemic uncertainty, which comes from gaps in what the model has seen [Kendall and Gal]. Know Ta adopts this distinction. Raw confidence scores are often poorly calibrated, and Temperature Scaling is a lightweight way to fix this after training [27]. Deep Ensembles give stronger estimates but cost much more computing power [31], so they are left for future work.\n\nEvaluation Metrics and Benchmark Datasets\n\nAccuracy, Precision, Recall, and F1 Score each capture a different side of performance and work best together [Sujon et al.]. Reporting only one metric is a known flaw in past detection research, and standardized multi metric evaluation is recommended [Chandra et al.]. ROC AUC adds a threshold independent way to compare systems [Jugade et al.]. For data, SONICS offers 97,164 English language tracks used for training and internal testing [28]. AIME provides AI platforms that do not overlap with SONICS, and is used only to test cross platform generalization [29].\n\nSynthesis\n\nThe literature points to a clear picture. AI music is now hard to tell apart from human music [8], it threatens musicians' income [9], [10], and it is poorly regulated worldwide and in the Philippines [18]. Detectors, meanwhile, break under simple audio changes [15], fail on unseen AI platforms [17], and ignore both vocal and instrumental separation and human vocal biomarkers [16]. Each component Know Ta uses has already been validated in a related area: Demucs for separation [22], EfficientNet B0 for spectral analysis [23], Bi LSTM for vocal analysis [24], attention for fusion [25], and Monte Carlo Dropout for uncertainty [26]. No reviewed study combines them for cross platform, dual signal AI music detection. Know Ta fills that gap.",
+                "pages": [
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "status": "found"
+            },
+            "significance_of_study": {
+                "heading": [
+                    "Significance of the Study"
+                ],
+                "content": "The authenticity of music has become an urgent concern in the digital era. With the rapid creation of computer generated songs, human artists face unfair competition and loss of income [9], [10]. By combining stem separation [22], spectral audio analysis [23], biological vocal tracking [16], [24], attention based fusion [25], and uncertainty estimation [26], this research provides a complete and transparent solution. The findings of this study offer direct benefits to several key groups across society, the music industry, and technology research.\n\nFilipino Artists, the OPM Community, and Local Policymakers\n\nThis study directly responds to the growing outcry among Filipino musicians, including prominent P pop groups like SB19 [21] and traditional OPM artists [19]. Current copyright laws under the Intellectual Property Office of the Philippines do not fully protect artists from having their vocal styles copied by Artificial Intelligence [18]. Know Ta gives local creators a reliable way to check whether their original work or vocal style has been replicated without permission. For artists in regional cultural centers like Davao City, who often work independently without expensive legal teams or major record labels, this tool helps protect their streaming royalties and creative reputation [20]. Furthermore, it provides local policymakers with real technical data on how synthetic music behaves, helping them create fair and updated rules for creative industries.\n\nIndependent Artists and Everyday Music Listeners\n\nProfessional audio forensic tools are usually very expensive, highly technical, and locked behind private studio software. Know Ta removes this barrier by packaging an advanced detection model into a simple, free web application. Independent musicians can quickly upload a suspicious song to see if their work was stolen, while everyday listeners can check whether their favorite songs were created by real people [8]. Because the website outputs simple percentage scores rather than confusing code, anyone can understand the results without needing a technical background.\n\nStreaming Platforms and Content Moderators\n\nStreaming services currently struggle to manage the thousands of synthetic tracks uploaded to their libraries every day [8]. Most existing security filters use a simple label that only says real or fake, which often makes mistakes on songs that mix real vocals with generated beats. Know Ta solves this by offering detailed conflict analytics and separate percentage scores for the music and the voice. If a track contains real human vocals layered over an AI generated instrumental track, content moderators receive an immediate notification explaining\n\nthe conflict. This allows platform staff to make fair, evidence based decisions rather than wrongly banning innocent human musicians.\n\nComputer Science and Deep Learning Researchers\n\nFor researchers in artificial intelligence and audio forensics, this study provides practical proof that separating audio into different layers produces better detection results than scanning a blended song. It also shows how to add Monte Carlo Dropout to an existing neural network without rebuilding the entire system from scratch [26]. By proving that an attention mechanism can dynamically balance instrumental and vocal features [25], this research establishes a clear technical blueprint that future scientists can adapt for other fields, such as detecting deepfake podcasts, speech clones, and video audio.\n\nFuture Researchers\n\nThis study serves as a foundational reference for future researchers who wish to explore two branch architectures, Bayesian uncertainty estimation, or cross platform generalization in the broader field of synthetic media forensics.\n\nScope and Delimitation\n\nThis study focuses on the design, development, and evaluation of Know Ta, a two branch deep learning system created to identify AI generated music tracks and provide transparent confidence percentages. To ensure the project remains practical, focused, and scientifically valid, specific boundaries have been established.",
+                "pages": [
+                    4,
+                    5
+                ],
+                "status": "found"
+            },
+            "methodology": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            },
+            "theoretical_framework": {
+                "heading": [
+                    "Theoretical Framework"
+                ],
+                "content": "Three theories support the design of Know Ta.\n\nBayesian Approximation Theory\n\nA neural network with dropout kept active at inference, sampled over many forward passes, approximates a Bayesian posterior over its predictions [26]. Uncertainty can then be split into aleatoric (unavoidable ambiguity in the data) and epistemic (reducible uncertainty from\n\nlimited model exposure) [Kendall and Gal]. This is why Know Ta uses Monte Carlo Dropout: it gives calibrated confidence scores instead of a single fixed prediction, which reduces the risk of overconfident false accusations against human artists.\n\nAttention Theory\n\nA model can learn to give different inputs different weights depending on their content, instead of treating all inputs equally [25]. This is the basis of Know Ta's fusion layer, which learns how much to trust the Audio Branch and the Vocal Branch for each track.\n\nMultimodal Learning Theory\n\nAdding a complementary modality never reduces expected utility [Huang et al.]. For Know Ta, this means that combining the Audio Branch and Vocal Branch, which capture different parts of a song, can only maintain or improve detection compared with either branch alone, as long as the fusion is well designed. This is the reason for the dual branch architecture.",
+                "pages": [
+                    9,
+                    10
+                ],
+                "status": "found"
+            },
+            "conceptual_framework": {
+                "heading": [
+                    "Conceptual Framework"
+                ],
+                "content": "Based on these theories, Know Ta treats detection as a three stage pipeline of Input, Process, and Output, shown in the methodological framework in Chapter 3 (Figure 1).\n\n● Input: English language audio tracks, both human made and AI generated, from the SONICS [28] and AIME [29] datasets. ● Process: Demucs separates each track into vocals and instruments [22]. Mel Spectrogram features go to the EfficientNet B0 Audio Branch [23], and prosodic features go to the Bi LSTM Vocal Branch [24]. An attention layer fuses the two outputs [25], and Monte Carlo Dropout produces Bayesian confidence estimates [26]. ● Output: A final label (Real or AI Generated), an overall Bayesian Confidence Score, separate confidence scores for each branch, a conflict flag when the branches disagree, and a real time authenticity report in the web application.",
+                "pages": [
+                    10
+                ],
+                "status": "found"
+            },
+            "review_of_related_literature": {
+                "heading": [],
+                "content": "",
+                "pages": [],
+                "status": "not_found"
+            }
+        }
+    },
+    "review": {
+        "status": "approved",
+        "missing_fields": [
+            "keywords",
+            "abstract",
+            "background_of_study",
+            "statement_of_problem",
+            "objectives",
+            "research_questions",
+            "methodology",
+            "review_of_related_literature"
+        ]
+    }
+}
